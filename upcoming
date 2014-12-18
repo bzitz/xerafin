@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ -z $1 ]  
+then
+   HOURS=0
+elif [ "$1" = "-d" ]
+then
+   HOURS=$(($2*24))
+else
+   HOURS=$1
+fi
+
+NOW=$(date +%s)
+t=$(($NOW+(3600*$HOURS)))
+
+echo "Over the next $HOURS hours, by cardbox:"
+sqlite3 q.db "select cardbox, count(*) from questions where next_scheduled < $t group by cardbox"
+
+echo -n "Total: "
+sqlite3 q.db "select count(*) from questions where next_Scheduled < $t"
+
+#echo "Over the next $HOURS hours, by length:"
+#sqlite3 q.db "select length(question), count(*) from questions where next_scheduled < $t group by length(question)"
+
+exit 0
+
+

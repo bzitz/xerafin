@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ -z $1 ]  
+then
+   HOURS=0
+else
+   HOURS=$1
+fi
+
+MIN_CARDBOX=$((($HOURS-1)/24))
+
+NOW=$(date +%s)
+t=$(($NOW+(3600*$HOURS)))
+
+
+subtotal=$(sqlite3 q.db "select count(*) from questions where next_scheduled < $t and next_scheduled > $NOW and cardbox > $MIN_CARDBOX")
+
+	x=24
+	while [ $x -lt $HOURS ] 
+	do
+		subtotal=$(($subtotal+$(sqlite3 q.db "select count(*) from questions where next_scheduled < $(($NOW+(3600*$x))) and next_scheduled > $NOW and cardbox = $(($x/24))")))
+		x=$(($x+24))
+	done 
+
+echo $subtotal
+
+exit 0
+
+

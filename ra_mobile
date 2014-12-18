@@ -1,0 +1,47 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo "Usage: ra_mobile number; where number is number of cards to be available"
+  exit 0
+fi
+
+source wsetup.sh
+NEW_WORDS_AT_ONCE=$(cat .prefs/NEW_WORDS_AT_ONCE)
+
+due_now=$(sqlite3 xerafin.db "select count(*) from questions where next_scheduled < $(date +%s)")
+if [ $due_now -ge $1 ] ; then 
+	exit
+else NUMBER_TO_ADD=$(($1-$due_now))
+fi
+x=0
+
+until [ $x -eq $HOURS_AHEAD_CNT ] || [ $(./peek_ahead $x) -gt $NUMBER_TO_ADD ]
+do
+x=$(($x+1))
+done
+
+#echo "Peeked ahead $x hours and $(./peek_ahead $x) was all I found."
+
+if [ $x -eq $HOURS_AHEAD_CNT ] ; then
+
+ y=0
+ until [ $(($(./peek_ahead $x)+($y*$NEW_WORDS_AT_ONCE))) -gt $NUMBER_TO_ADD ]
+ do
+ y=$(($y+1))
+ x=$(($x+1))
+ #echo "$(./peek_ahead $x) old words and $(($y*$NEW_WORDS_AT_ONCE)) new words?"
+ done
+
+ echo "Adding $y hours worth of new words to go with $x hours worth of current words."
+ 
+ ./new_words.sh $(($y*$NEW_WORDS_AT_ONCE))
+
+fi
+
+./read_ahead $x
+echo $(($(date +%s)+($x*3600))) > cleared_until
+
+#./upcoming
+
+exit 0
+

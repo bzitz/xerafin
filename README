@@ -1,0 +1,22 @@
+Installation Instructions:
+
+Unzip this file into your HOME directory. It'll put everything in a folder called xerafin.
+
+If you have a Zyzzyva Cardbox (version 2.2.3 or older, only), put your Anagrams.db file in the xerafin directory.
+
+At the command prompt, type 
+
+cd xerafin
+
+to get into the xerafin directory, and then
+
+./install.sh
+
+to run the install script.
+
+Karatasi and Zyzzyva syncing are optional. 
+The assumption is that your Karatasi library directory is located at $HOME/Library/Karatasi and
+your Zyzzyva is the default under $HOME/Dropbox/Apps
+
+Note Zyzzyva syncing will be deprecated when the new NASPA-authored version is released.
+

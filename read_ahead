@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [ -z $1 ]  
+then
+   echo 'Usage: reading_ahead.sh hours [cardbox]'
+   exit 0
+fi
+
+## Rule:
+## Cardbox 0 read up to 8 hours ahead
+## Cardbox n read up to 24*n hours ahead
+
+CB=$2
+HOURS=$1
+if [ $HOURS -lt 8 ] ; then
+##	MIN_CARDBOX=-1
+## for now let's never move cardbox 0 stuff
+	MIN_CARDBOX=0
+else MIN_CARDBOX=$((($HOURS-1)/24))
+fi
+NOW=$(date +%s)
+t=$(($NOW+(3600*$HOURS)))
+
+if [ -z $2 ]
+then
+
+ # if we say "24" it misses CB1 stuff that might be 23 or less
+ if [ $1 -gt 24 ] ; then
+   ./read_ahead $(((($1-1)/24)*24))
+ fi
+
+sqlite3 q.db "select count(*) from questions where next_scheduled < $t and cardbox > $MIN_CARDBOX"
+sqlite3 q.db "update questions set next_scheduled = $NOW where next_scheduled < $t and cardbox > $MIN_CARDBOX and next_scheduled > $NOW"
+
+else
+
+
+sqlite3 q.db "select count(*) from questions where cardbox = $CB and next_scheduled < $t"
+sqlite3 q.db "update questions set next_scheduled = $NOW where cardbox = $CB and next_scheduled < $t and next_scheduled > $NOW"
+
+fi
+
+exit 0
+
+

@@ -1,0 +1,23 @@
+XERAFIN Changelog
+
+1 Dec 2014 - Version 0.9.3-alpha
+Changed the definition of marriage
+Aerolith export to do cardbox on wordwalls
+Added screen to view and edit preferences
+Moved changeable preferences to .prefs folder
+Colon commands in quiz mode are case insensitive
+Aerolith and Karatasi export will add up to 500 words if you ask for more than are due
+Tweaked some output
+
+6 Nov 2014 - Version 0.9.2-alpha
+More installer bugfixes
+Option to show the number of solutions in quiz
+Added "cards due today" quiz option (#8)
+Message on :revert and :refresh
+Allow user to select word length to cardbox on install
+Endless mode is now default
+
+2 Nov 2014 - Version 0.9.1-alpha
+Installer bugfixes
+
+

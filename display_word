@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# this will read stdin
+while read line
+do
+flag="HOOK"
+(echo "$line" && echo ' ') | grep -o . | while read char
+do
+last="$curr"
+curr="$char"
+#echo "debug $last $curr $flag"
+if [ $flag = "HOOK" ] ; then
+if [ "$curr" = "#" ] ; then
+   tput setaf 6
+   printf %c $last
+   unset curr
+elif [ "$curr" = "+" ] ; then
+   tput setaf 2
+   printf %c $last
+   unset curr
+elif [ "$curr" = "" ] ; then
+   tput setaf 5
+   printf %c $last
+   printf %c " "
+   flag=WORD
+else 
+   tput setaf 5
+   printf %c $last
+fi
+elif [ $flag = "WORD" ] ; then
+   if [ "$last" = "" ] ; then
+#      echo "debug set word color: last '$last'"
+      if [ "$curr" = "#" ] ; then
+		tput setaf 6
+      	        curr=" "
+      elif [ "$curr" = "+" ] ; then
+		tput setaf 2
+		curr=" "
+      else tput setaf 5
+      fi
+    fi
+    printf %c $curr
+    if [ "$curr" = "" ] ; then 
+	printf %c " "
+	flag="HOOK"
+    fi
+fi
+done
+done
+#printf %c "$curr"
+tput sgr0
+
+exit
+
+
